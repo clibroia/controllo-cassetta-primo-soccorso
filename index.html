@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17324d">
+  <title>Verifica periodica · Cassetta di primo soccorso</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand-icon" aria-hidden="true">+</div>
+      <div><p class="eyebrow">Sicurezza · Istituto scolastico</p><h1>Controllo cassetta di primo soccorso</h1><p class="subtitle">Scheda di verifica periodica · D.M. 388/2003, Allegato 1</p></div>
+    </header>
+
+    <main>
+      <section class="panel" aria-labelledby="dati-title">
+        <div class="section-heading"><div><span class="section-number">01</span><h2 id="dati-title">Dati del controllo</h2></div><span class="pill">Compilazione</span></div>
+        <div class="fields-grid">
+          <label class="field"><span>Data del controllo <span class="required">*</span></span><input id="dataControllo" type="date" required></label>
+          <label class="field"><span>Cassetta controllata <span class="required">*</span></span><input id="cassetta" type="text" maxlength="150" placeholder="Es. Plesso centrale · Piano terra · Corridoio A" required></label>
+        </div>
+        <div class="staff-heading"><label id="staff-label">Personale che ha effettuato il controllo <span class="required">*</span></label><button id="addStaff" type="button" class="btn btn-outline"><span aria-hidden="true">＋</span> Aggiungi persona</button></div>
+        <div id="staffList" class="staff-list" aria-labelledby="staff-label"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="check-title">
+        <div class="section-heading"><div><span class="section-number">02</span><h2 id="check-title">Verifica dei presidi</h2></div><span class="counter" id="progressText" aria-live="polite">0 / 18 verificati</span></div>
+        <p class="section-description">Per ogni presidio, verifica che la quantità disponibile sia almeno quella minima indicata e che i materiali siano integri, utilizzabili e non scaduti.</p>
+        <div class="legend" aria-label="Legenda degli esiti">
+          <span><span class="legend-symbol good" aria-hidden="true">✓</span> Presente e conforme</span>
+          <span><span class="legend-symbol bad" aria-hidden="true">×</span> Assente / quantità insufficiente</span>
+          <span><span class="legend-symbol warn" aria-hidden="true">!</span> Non integro / scaduto</span>
+        </div>
+        <div class="progress-track" aria-hidden="true"><div id="progressFill"></div></div>
+        <div id="items" class="checklist" role="group" aria-label="Elenco dei presidi"></div>
+      </section>
+
+      <section class="panel summary-panel" aria-labelledby="summary-title">
+        <div class="section-heading"><div><span class="section-number">03</span><h2 id="summary-title">Esito e osservazioni</h2></div></div>
+        <div class="stats" aria-live="polite">
+          <div class="stat"><strong id="countOk">0</strong><span>Conformi</span></div>
+          <div class="stat"><strong id="countMissing">0</strong><span>Assenti / insufficienti</span></div>
+          <div class="stat"><strong id="countExpired">0</strong><span>Non integri / scaduti</span></div>
+          <div class="stat"><strong id="countPending">18</strong><span>Da verificare</span></div>
+        </div>
+        <div id="resultBanner" class="result-banner" role="status">La verifica non è ancora completa.</div>
+        <label class="field notes-field"><span>Osservazioni e interventi di reintegro</span><textarea id="notes" rows="4" placeholder="Indicare i presidi da reintegrare o sostituire, eventuali anomalie, comunicazioni e interventi programmati..."></textarea></label>
+        <div class="actions"><button id="printBtn" type="button" class="btn btn-primary">Stampa / salva in PDF</button><button id="resetBtn" type="button" class="btn btn-quiet">Nuovo controllo</button></div>
+        <p class="save-note" id="saveNote" role="status">I dati sono conservati solo in questo browser, sul dispositivo in uso.</p>
+      </section>
+      <footer class="footer"><p><strong>Riferimento:</strong> D.M. 15 luglio 2003, n. 388, Allegato 1 · Dotazioni minime previste per gruppi A e B.</p><p>Le quantità aggiuntive eventualmente adottate dall'istituto e le dotazioni collegate ai rischi specifici devono essere verificate separatamente. La presente scheda non sostituisce il DVR né le procedure interne.</p></footer>
+    </main>
+  </div>
+</body>
+</html>
