@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#17324d">
-  <title>Verifica periodica · Cassetta di primo soccorso</title>
+  <title>Primo soccorso · Controlli e inventario</title>
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
@@ -12,46 +12,80 @@
   <div class="page">
     <header class="topbar">
       <div class="brand-icon" aria-hidden="true">+</div>
-      <div><p class="eyebrow">Sicurezza · Istituto scolastico</p><h1>Controllo cassetta di primo soccorso</h1><p class="subtitle">Scheda di verifica periodica · D.M. 388/2003, Allegato 1</p></div>
+      <div><p class="eyebrow">Sicurezza · Istituto scolastico</p><h1>Gestione cassette di primo soccorso</h1><p class="subtitle">Controlli periodici e inventario · D.M. 388/2003, Allegato 1</p></div>
     </header>
-
     <main>
-      <section class="panel" aria-labelledby="dati-title">
-        <div class="section-heading"><div><span class="section-number">01</span><h2 id="dati-title">Dati del controllo</h2></div><span class="pill">Compilazione</span></div>
+      <nav class="mode-tabs" aria-label="Modalità di lavoro">
+        <button type="button" id="modeControl" class="mode-tab active" aria-pressed="true">✓ Controllo cassetta</button>
+        <button type="button" id="modeInventory" class="mode-tab" aria-pressed="false">▦ Inventario</button>
+        <button type="button" id="modeHistory" class="mode-tab" aria-pressed="false">◷ Storico</button>
+      </nav>
+      <section id="editArea">
+        <section class="panel" aria-labelledby="dati-title">
+          <div class="section-heading"><div><span class="section-number">01</span><h2 id="dati-title">Dati del controllo</h2></div><span class="pill">Compilazione</span></div>
+          <div class="fields-grid">
+            <label class="field"><span id="dateLabel">Data del controllo <span class="required">*</span></span><input id="dataControllo" type="date" required></label>
+            <label class="field"><span>Cassetta <span class="required">*</span></span><input id="cassetta" type="text" maxlength="150" list="cassettaOptions" placeholder="Es. Plesso centrale · Piano terra · Corridoio A" required></label>
+            <datalist id="cassettaOptions"></datalist>
+          </div>
+          <div class="staff-heading"><label id="staff-label">Personale incaricato <span class="required">*</span></label><button id="addStaff" type="button" class="btn btn-outline"><span aria-hidden="true">＋</span> Aggiungi persona</button></div>
+          <div id="staffList" class="staff-list" aria-labelledby="staff-label"></div>
+        </section>
+        <div id="controlArea">
+          <section class="panel" aria-labelledby="check-title">
+            <div class="section-heading"><div><span class="section-number">02</span><h2 id="check-title">Verifica dei presidi</h2></div><span class="counter" id="progressText" aria-live="polite">0 / 18 verificati</span></div>
+            <p class="section-description">Per ogni presidio, verifica che la quantità sia almeno quella minima indicata e che i materiali siano integri, utilizzabili e non scaduti.</p>
+            <div class="legend" aria-label="Legenda degli esiti">
+              <span><span class="legend-symbol good" aria-hidden="true">✓</span> Presente e conforme</span>
+              <span><span class="legend-symbol bad" aria-hidden="true">×</span> Assente / quantità insufficiente</span>
+              <span><span class="legend-symbol warn" aria-hidden="true">!</span> Non integro / scaduto</span>
+            </div>
+            <div class="progress-track" aria-hidden="true"><div id="progressFill"></div></div>
+            <div id="items" class="checklist" role="group" aria-label="Elenco dei presidi"></div>
+          </section>
+          <section class="panel summary-panel" aria-labelledby="summary-title">
+            <div class="section-heading"><div><span class="section-number">03</span><h2 id="summary-title">Esito e osservazioni</h2></div></div>
+            <div class="stats" aria-live="polite">
+              <div class="stat"><strong id="countOk">0</strong><span>Conformi</span></div>
+              <div class="stat"><strong id="countMissing">0</strong><span>Assenti / insufficienti</span></div>
+              <div class="stat"><strong id="countExpired">0</strong><span>Non integri / scaduti</span></div>
+              <div class="stat"><strong id="countPending">18</strong><span>Da verificare</span></div>
+            </div>
+            <div id="resultBanner" class="result-banner" role="status">La verifica non è ancora completa.</div>
+            <label class="field notes-field"><span>Osservazioni e interventi di reintegro</span><textarea id="notes" rows="4" placeholder="Indicare i presidi da reintegrare o sostituire e gli interventi programmati..."></textarea></label>
+          </section>
+        </div>
+        <div id="inventoryArea" hidden>
+          <section class="panel" aria-labelledby="inv-title">
+            <div class="section-heading"><div><span class="section-number">02</span><h2 id="inv-title">Inventario dei materiali</h2></div><span class="pill">Quantità e scadenze</span></div>
+            <p class="section-description">Registra le giacenze effettive. Per prodotti con più scadenze, aggiungi una riga per lotto; per i presidi senza scadenza lascia il campo vuoto. Le quantità minime sono espresse nelle unità indicate per ciascun presidio.</p>
+            <div id="inventoryItems" class="inventory-list"></div>
+            <div class="inventory-extra-heading"><h3>Materiali aggiuntivi</h3><button id="addExtra" type="button" class="btn btn-outline">＋ Aggiungi materiale</button></div>
+            <div id="extraItems" class="inventory-list"></div>
+          </section>
+          <section class="panel">
+            <div class="section-heading"><div><span class="section-number">03</span><h2>Riepilogo inventario</h2></div></div>
+            <div id="inventorySummary" class="result-banner" role="status"></div>
+            <label class="field notes-field"><span>Note e reintegri da programmare</span><textarea id="inventoryNotes" rows="4" placeholder="Annotazioni su materiali, lotti, anomalie e acquisti..."></textarea></label>
+          </section>
+        </div>
+        <section class="panel action-panel">
+          <div class="actions"><button id="saveRecordBtn" type="button" class="btn btn-primary">Salva nello storico</button><button id="printBtn" type="button" class="btn btn-outline">Stampa / salva in PDF</button><button id="resetBtn" type="button" class="btn btn-quiet">Nuova rilevazione</button></div>
+          <p class="save-note" id="saveNote" role="status">Bozza e storico sono conservati soltanto in questo browser e dispositivo. Esporta periodicamente una copia JSON.</p>
+        </section>
+      </section>
+      <section id="historyArea" class="panel" hidden aria-labelledby="history-title">
+        <div class="section-heading"><div><span class="section-number">03</span><h2 id="history-title">Storico delle rilevazioni</h2></div></div>
+        <p class="section-description">Le registrazioni rimangono separate per cassetta. Seleziona una rilevazione per consultarla senza modificare lo storico.</p>
         <div class="fields-grid">
-          <label class="field"><span>Data del controllo <span class="required">*</span></span><input id="dataControllo" type="date" required></label>
-          <label class="field"><span>Cassetta controllata <span class="required">*</span></span><input id="cassetta" type="text" maxlength="150" placeholder="Es. Plesso centrale · Piano terra · Corridoio A" required></label>
+          <label class="field"><span>Filtra per cassetta</span><select id="historyFilter"><option value="">Tutte le cassette</option></select></label>
+          <label class="field"><span>Tipo di rilevazione</span><select id="historyType"><option value="">Tutte</option><option value="control">Controlli</option><option value="inventory">Inventari</option></select></label>
         </div>
-        <div class="staff-heading"><label id="staff-label">Personale che ha effettuato il controllo <span class="required">*</span></label><button id="addStaff" type="button" class="btn btn-outline"><span aria-hidden="true">＋</span> Aggiungi persona</button></div>
-        <div id="staffList" class="staff-list" aria-labelledby="staff-label"></div>
+        <div class="actions"><button type="button" id="exportBtn" class="btn btn-outline">Esporta archivio JSON</button><button type="button" id="importBtn" class="btn btn-outline">Importa archivio JSON</button><input id="importFile" type="file" accept="application/json,.json" hidden></div>
+        <div id="historyList" class="history-list" aria-live="polite"></div>
+        <div id="recordDetail" class="record-detail" hidden></div>
       </section>
-
-      <section class="panel" aria-labelledby="check-title">
-        <div class="section-heading"><div><span class="section-number">02</span><h2 id="check-title">Verifica dei presidi</h2></div><span class="counter" id="progressText" aria-live="polite">0 / 18 verificati</span></div>
-        <p class="section-description">Per ogni presidio, verifica che la quantità disponibile sia almeno quella minima indicata e che i materiali siano integri, utilizzabili e non scaduti.</p>
-        <div class="legend" aria-label="Legenda degli esiti">
-          <span><span class="legend-symbol good" aria-hidden="true">✓</span> Presente e conforme</span>
-          <span><span class="legend-symbol bad" aria-hidden="true">×</span> Assente / quantità insufficiente</span>
-          <span><span class="legend-symbol warn" aria-hidden="true">!</span> Non integro / scaduto</span>
-        </div>
-        <div class="progress-track" aria-hidden="true"><div id="progressFill"></div></div>
-        <div id="items" class="checklist" role="group" aria-label="Elenco dei presidi"></div>
-      </section>
-
-      <section class="panel summary-panel" aria-labelledby="summary-title">
-        <div class="section-heading"><div><span class="section-number">03</span><h2 id="summary-title">Esito e osservazioni</h2></div></div>
-        <div class="stats" aria-live="polite">
-          <div class="stat"><strong id="countOk">0</strong><span>Conformi</span></div>
-          <div class="stat"><strong id="countMissing">0</strong><span>Assenti / insufficienti</span></div>
-          <div class="stat"><strong id="countExpired">0</strong><span>Non integri / scaduti</span></div>
-          <div class="stat"><strong id="countPending">18</strong><span>Da verificare</span></div>
-        </div>
-        <div id="resultBanner" class="result-banner" role="status">La verifica non è ancora completa.</div>
-        <label class="field notes-field"><span>Osservazioni e interventi di reintegro</span><textarea id="notes" rows="4" placeholder="Indicare i presidi da reintegrare o sostituire, eventuali anomalie, comunicazioni e interventi programmati..."></textarea></label>
-        <div class="actions"><button id="printBtn" type="button" class="btn btn-primary">Stampa / salva in PDF</button><button id="resetBtn" type="button" class="btn btn-quiet">Nuovo controllo</button></div>
-        <p class="save-note" id="saveNote" role="status">I dati sono conservati solo in questo browser, sul dispositivo in uso.</p>
-      </section>
-      <footer class="footer"><p><strong>Riferimento:</strong> D.M. 15 luglio 2003, n. 388, Allegato 1 · Dotazioni minime previste per gruppi A e B.</p><p>Le quantità aggiuntive eventualmente adottate dall'istituto e le dotazioni collegate ai rischi specifici devono essere verificate separatamente. La presente scheda non sostituisce il DVR né le procedure interne.</p></footer>
+      <footer class="footer"><p><strong>Riferimento:</strong> D.M. 15 luglio 2003, n. 388, Allegato 1 · Dotazioni minime previste per gruppi A e B.</p><p>Le dotazioni aggiuntive dell'istituto e quelle correlate ai rischi specifici richiedono verifica secondo DVR e procedure interne. L'inventario è una rilevazione datata, non un registro automatico dei prelievi.</p></footer>
     </main>
   </div>
 </body>
